@@ -40,10 +40,10 @@
         <tbody>
             <?php foreach ($keywords as $kw): ?>
                 <tr data-keyword-id="<?= (int) $kw['id'] ?>">
-                    <td><a href="index.php?action=show&id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
-                    <td><?= $kw['current_position'] !== null ? (int) $kw['current_position'] : '&ndash;' ?></td>
-                    <td><?= $kw['trend'] === null ? '&ndash;' : e($kw['trend']) ?></td>
-                    <td class="actions">
+                    <td data-label="Keyword"><a href="index.php?action=show&id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
+                    <td data-label="Current Position"><?= $kw['current_position'] !== null ? (int) $kw['current_position'] : '&ndash;' ?></td>
+                    <td data-label="7-day Trend"><?= $kw['trend'] === null ? '&ndash;' : e($kw['trend']) ?></td>
+                    <td class="actions" data-label="Actions">
                         <a href="index.php?action=edit&id=<?= (int) $kw['id'] ?>">Edit</a>
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this keyword?');">
                             <input type="hidden" name="action" value="destroy">

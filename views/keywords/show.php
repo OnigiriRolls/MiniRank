@@ -17,8 +17,8 @@
         <tbody>
             <?php foreach ($history as $row): ?>
                 <tr>
-                    <td><?= $row['date'] ?></td>
-                    <td><?= (int) $row['position'] ?></td>
+                    <td data-label="Date"><?= $row['date'] ?></td>
+                    <td data-label="Position"><?= (int) $row['position'] ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
