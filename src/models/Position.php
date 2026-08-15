@@ -66,6 +66,11 @@ class Position
         return $stmt->fetchAll();
     }
 
+    public static function history(int $keywordId): array
+    {
+        return self::recent($keywordId, -1);
+    }
+
     public static function create(int $keywordId, string $date, int $position): bool
     {
         $stmt = db()->prepare(

@@ -25,6 +25,19 @@ class KeywordController
         $this->renderForm($keyword['id'], $keyword['phrase']);
     }
 
+    public function show(int $id): void
+    {
+        $keyword = Keyword::find($id);
+        if ($keyword === null) {
+            $this->render('notfound', [], 404);
+            return;
+        }
+        $this->render('keywords/show', [
+            'keyword' => $keyword,
+            'history' => Position::history($id),
+        ]);
+    }
+
     public function store(): void
     {
         $phrase = trim((string) ($_POST['phrase'] ?? ''));

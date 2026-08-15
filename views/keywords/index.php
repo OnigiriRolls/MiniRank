@@ -40,7 +40,7 @@
         <tbody>
             <?php foreach ($keywords as $kw): ?>
                 <tr data-keyword-id="<?= (int) $kw['id'] ?>">
-                    <td><?= e($kw['phrase']) ?></td>
+                    <td><a href="index.php?action=show&id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
                     <td><?= $kw['current_position'] !== null ? (int) $kw['current_position'] : '&ndash;' ?></td>
                     <td><?= $kw['trend'] === null ? '&ndash;' : e($kw['trend']) ?></td>
                     <td class="actions">

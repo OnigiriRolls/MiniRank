@@ -42,6 +42,9 @@ switch ($action) {
         $refresh = new RefreshController();
         $refresh->refresh();
         break;
+    case 'show':
+        $controller->show($id ?? 0);
+        break;  
     default:
         $controller->index();
 }
