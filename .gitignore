@@ -1,0 +1,13 @@
+# SQLite database files - never commit data
+db/*.sqlite
+db/*.sqlite-journal
+db/*.sqlite-wal
+db/*.sqlite-shm
+
+# Keep the empty db folder tracked
+!db/.gitkeep
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.log

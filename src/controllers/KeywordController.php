@@ -1,0 +1,97 @@
+<?php
+
+declare(strict_types=1);
+
+class KeywordController
+{
+    public function index(): void
+    {
+        $keywords = Keyword::all();
+        $this->render('keywords/index', ['keywords' => $keywords]);
+    }
+
+    public function create(): void
+    {
+        $this->renderForm(null, '');
+    }
+
+    public function edit(int $id): void
+    {
+        $keyword = Keyword::find($id);
+        if ($keyword === null) {
+            $this->render('notfound', [], 404);
+            return;
+        }
+        $this->renderForm($keyword['id'], $keyword['phrase']);
+    }
+
+    public function store(): void
+    {
+        $phrase = trim((string) ($_POST['phrase'] ?? ''));
+        $error = $this->validate($phrase, null);
+        if ($error !== null) {
+            $this->renderForm(null, $phrase, $error);
+            return;
+        }
+        Keyword::create($phrase);
+        redirect('index.php');
+    }
+
+    public function update(int $id): void
+    {
+        $keyword = Keyword::find($id);
+        if ($keyword === null) {
+            $this->render('notfound', [], 404);
+            return;
+        }
+        $phrase = trim((string) ($_POST['phrase'] ?? ''));
+        $error = $this->validate($phrase, $id);
+        if ($error !== null) {
+            $this->renderForm($id, $phrase, $error);
+            return;
+        }
+        Keyword::update($id, $phrase);
+        redirect('index.php');
+    }
+
+    public function destroy(int $id): void
+    {
+        Keyword::delete($id);
+        redirect('index.php');
+    }
+
+    private function validate(string $phrase, ?int $ignoreId): ?string
+    {
+        if ($phrase === '') {
+            return 'The keyword must not be empty.';
+        }
+        if (mb_strlen($phrase) > 255) {
+            return 'The keyword must be at most 255 characters.';
+        }
+        $existing = Keyword::all();
+        foreach ($existing as $kw) {
+            if (mb_strtolower($kw['phrase']) === mb_strtolower($phrase) && $kw['id'] !== $ignoreId) {
+                return 'This keyword already exists.';
+            }
+        }
+        return null;
+    }
+
+    private function renderForm(?int $id, string $phrase, ?string $error = null): void
+    {
+        $this->render('keywords/form', [
+            'id' => $id,
+            'phrase' => $phrase,
+            'error' => $error,
+        ]);
+    }
+
+    private function render(string $view, array $data = [], int $status = 200): void
+    {
+        http_response_code($status);
+        extract($data, EXTR_SKIP);
+        require __DIR__ . '/../../views/header.php';
+        require __DIR__ . '/../../views/' . $view . '.php';
+        require __DIR__ . '/../../views/footer.php';
+    }
+}
