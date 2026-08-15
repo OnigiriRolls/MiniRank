@@ -2,6 +2,9 @@
 ?>
 <h2>Tracked keywords</h2>
 
+<button type="button" id="refresh-positions" class="refresh-button">Refresh positions</button>
+<p id="refresh-status" class="refresh-status" hidden></p>
+
 <form method="post" action="index.php" class="add-form">
     <input type="hidden" name="action" value="store">
     <input

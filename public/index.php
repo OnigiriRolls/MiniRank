@@ -35,6 +35,13 @@ switch ($action) {
         }
         $controller->destroy($id ?? 0);
         break;
+    case 'refresh':
+        if ($method !== 'POST') {
+            redirect('index.php');
+        }
+        $refresh = new RefreshController();
+        $refresh->refresh();
+        break;
     default:
         $controller->index();
 }

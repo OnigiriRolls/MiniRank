@@ -4,6 +4,26 @@ declare(strict_types=1);
 
 class Position
 {
+    public static function latest(int $keywordId): ?int
+    {
+        $stmt = db()->prepare(
+            'SELECT position FROM positions WHERE keyword_id = :keyword_id ORDER BY date DESC, id DESC LIMIT 1'
+        );
+        $stmt->execute([':keyword_id' => $keywordId]);
+        $row = $stmt->fetch();
+        return $row === false ? null : (int) $row['position'];
+    }
+
+    public static function onDate(int $keywordId, string $date): ?int
+    {
+        $stmt = db()->prepare(
+            'SELECT position FROM positions WHERE keyword_id = :keyword_id AND date = :date LIMIT 1'
+        );
+        $stmt->execute([':keyword_id' => $keywordId, ':date' => $date]);
+        $row = $stmt->fetch();
+        return $row === false ? null : (int) $row['position'];
+    }
+
     public static function create(int $keywordId, string $date, int $position): bool
     {
         $stmt = db()->prepare(
