@@ -9,6 +9,7 @@ class RefreshController
         $today = (new DateTimeImmutable('today'))->format('Y-m-d');
 
         $positions = [];
+        $trends = [];
         foreach (Keyword::all() as $keyword) {
             $id = (int) $keyword['id'];
             $existing = Position::onDate($id, $today);
@@ -21,10 +22,11 @@ class RefreshController
             }
 
             $positions[$id] = $position;
+            $trends[$id] = Position::trend($id);
         }
 
         header('Content-Type: application/json');
-        echo json_encode(['date' => $today, 'positions' => $positions]);
+        echo json_encode(['date' => $today, 'positions' => $positions, 'trends' => $trends]);
         exit;
     }
 }

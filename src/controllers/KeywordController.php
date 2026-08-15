@@ -6,7 +6,7 @@ class KeywordController
 {
     public function index(): void
     {
-        $keywords = Keyword::all();
+        $keywords = Keyword::withStats();
         $this->render('keywords/index', ['keywords' => $keywords]);
     }
 

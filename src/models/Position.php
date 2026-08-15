@@ -24,6 +24,48 @@ class Position
         return $row === false ? null : (int) $row['position'];
     }
 
+    public static function trend(int $keywordId): ?string
+    {
+        $rows = self::recent($keywordId, 8);
+        if (empty($rows)) {
+            return null;
+        }
+
+        $current = (int) $rows[0]['position'];
+        $targetDate = (new DateTimeImmutable('today'))->modify('-7 days')->format('Y-m-d');
+
+        $sevenDaysAgo = null;
+        foreach ($rows as $row) {
+            if (strcmp($row['date'], $targetDate) <= 0) {
+                $sevenDaysAgo = (int) $row['position'];
+                break;
+            }
+        }
+
+        if ($sevenDaysAgo === null) {
+            return null;
+        }
+
+        if ($current < $sevenDaysAgo) {
+            return 'improved';
+        }
+        if ($current > $sevenDaysAgo) {
+            return 'declined';
+        }
+        return 'stable';
+    }
+
+    public static function recent(int $keywordId, int $limit): array
+    {
+        $stmt = db()->prepare(
+            'SELECT date, position FROM positions WHERE keyword_id = :keyword_id ORDER BY date DESC, id DESC LIMIT :limit'
+        );
+        $stmt->bindValue(':keyword_id', $keywordId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public static function create(int $keywordId, string $date, int $position): bool
     {
         $stmt = db()->prepare(

@@ -11,6 +11,23 @@ class Keyword
             ->fetchAll();
     }
 
+    public static function withStats(): array
+    {
+        $keywords = self::all();
+
+        foreach ($keywords as &$keyword) {
+            $keyword['current_position'] = null;
+            $recent = Position::recent((int) $keyword['id'], 1);
+            if (!empty($recent)) {
+                $keyword['current_position'] = (int) $recent[0]['position'];
+            }
+            $keyword['trend'] = Position::trend((int) $keyword['id']);
+        }
+        unset($keyword);
+
+        return $keywords;
+    }
+
     public static function find(int $id): ?array
     {
         $stmt = db()->prepare('SELECT id, phrase, created_at FROM keywords WHERE id = :id');
