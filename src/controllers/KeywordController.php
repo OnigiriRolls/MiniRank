@@ -75,11 +75,16 @@ class KeywordController
 
     private function validate(string $phrase, ?int $ignoreId): ?string
     {
+        $phrase = trim($phrase);
+
         if ($phrase === '') {
             return 'The keyword must not be empty.';
         }
         if (mb_strlen($phrase) > 255) {
             return 'The keyword must be at most 255 characters.';
+        }
+        if (preg_match('/[\x00-\x1F\x7F]/', $phrase)) {
+            return 'The keyword must not contain control characters.';
         }
         $existing = Keyword::all();
         foreach ($existing as $kw) {
@@ -96,7 +101,7 @@ class KeywordController
             'id' => $id,
             'phrase' => $phrase,
             'error' => $error,
-        ]);
+        ], $error !== null ? 400 : 200);
     }
 
     private function render(string $view, array $data = [], int $status = 200): void

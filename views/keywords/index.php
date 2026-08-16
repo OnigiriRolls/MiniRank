@@ -13,8 +13,7 @@
         placeholder="Add a keyword to track"
         value="<?= e($addPhrase ?? '') ?>"
         required
-        maxlength="255"
-    >
+        maxlength="255">
     <button type="submit">Add</button>
 </form>
 
@@ -25,8 +24,7 @@
         type="text"
         id="keyword-search"
         placeholder="Search keywords"
-        class="keyword-search"
-    >
+        class="keyword-search">
     <p id="no-results" class="empty" hidden>No keywords match your search.</p>
     <table class="keyword-table">
         <thead>

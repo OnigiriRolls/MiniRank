@@ -19,8 +19,7 @@
         value="<?= e($phrase) ?>"
         required
         maxlength="255"
-        placeholder="e.g. best running shoes"
-    >
+        placeholder="e.g. best running shoes">
     <div class="form-actions">
         <button type="submit">Save</button>
         <a href="index.php" class="button-link">Cancel</a>

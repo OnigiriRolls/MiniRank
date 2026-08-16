@@ -8,7 +8,17 @@ $controller = new KeywordController();
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_POST['action'] ?? $_GET['action'] ?? 'index';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
+
+$id = null;
+if (isset($_GET['id']) || isset($_POST['id'])) {
+    $rawId = $_GET['id'] ?? $_POST['id'];
+    if (filter_var($rawId, FILTER_VALIDATE_INT) === false || (int) $rawId <= 0) {
+        http_response_code(400);
+        echo 'Bad request: invalid keyword id.';
+        exit;
+    }
+    $id = (int) $rawId;
+}
 
 switch ($action) {
     case 'create':
@@ -44,7 +54,7 @@ switch ($action) {
         break;
     case 'show':
         $controller->show($id ?? 0);
-        break;  
+        break;
     default:
         $controller->index();
 }

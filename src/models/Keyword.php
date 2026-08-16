@@ -49,7 +49,7 @@ class Keyword
         $stmt->execute([':id' => $id, ':phrase' => $phrase]);
         return $stmt->rowCount() > 0;
     }
-    
+
     public static function delete(int $id): bool
     {
         $stmt = db()->prepare('DELETE FROM keywords WHERE id = :id');
