@@ -29,15 +29,11 @@ $totalPositions = 0;
 foreach ($phrases as $phrase) {
     $keywordId = Keyword::create($phrase);
 
-    $position = random_int(1, 100);
+    $position = simulatePosition(null);
     $rows = [];
 
     for ($i = 0; $i < $days; $i++) {
-        $delta = random_int(-3, 3);
-        if ($i > 0 && random_int(1, 3) === 1) {
-            $delta = random_int(-8, 8);
-        }
-        $position = max(1, min(100, $position + $delta));
+        $position = simulatePosition($position);
 
         $rows[] = [
             'date' => $startDate->modify("+$i days")->format('Y-m-d'),
