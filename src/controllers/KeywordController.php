@@ -6,28 +6,36 @@ class KeywordController
 {
     public function index(): void
     {
-        $keywords = Keyword::withStats();
-        $this->render('keywords/index', ['keywords' => $keywords]);
+        $projectId = $this->requireProject();
+        $keywords = Keyword::withStats($projectId);
+        $this->render('keywords/index', [
+            'keywords' => $keywords,
+            'projectId' => $projectId,
+            'project' => Project::find($projectId),
+        ]);
     }
 
     public function create(): void
     {
-        $this->renderForm(null, '');
+        $projectId = $this->requireProject();
+        $this->renderForm(null, '', $projectId);
     }
 
     public function edit(int $id): void
     {
-        $keyword = Keyword::find($id);
+        $projectId = $this->requireProject();
+        $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
             return;
         }
-        $this->renderForm($keyword['id'], $keyword['phrase']);
+        $this->renderForm($keyword['id'], $keyword['phrase'], $projectId);
     }
 
     public function show(int $id): void
     {
-        $keyword = Keyword::find($id);
+        $projectId = $this->requireProject();
+        $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
             return;
@@ -35,12 +43,14 @@ class KeywordController
         $this->render('keywords/show', [
             'keyword' => $keyword,
             'history' => Position::history($id),
+            'projectId' => $projectId,
         ]);
     }
 
     public function exportCsv(int $id): void
     {
-        $keyword = Keyword::find($id);
+        $projectId = $this->requireProject();
+        $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
             return;
@@ -59,40 +69,52 @@ class KeywordController
 
     public function store(): void
     {
+        $projectId = $this->requireProject();
         $phrase = trim((string) ($_POST['phrase'] ?? ''));
-        $error = $this->validate($phrase, null);
+        $error = $this->validate($phrase, null, $projectId);
         if ($error !== null) {
-            $this->renderIndex($phrase, $error, 400);
+            $this->renderIndex($projectId, $phrase, $error, 400);
             return;
         }
-        Keyword::create($phrase);
+        Keyword::create($projectId, $phrase);
         redirect('index.php');
     }
 
     public function update(int $id): void
     {
-        $keyword = Keyword::find($id);
+        $projectId = $this->requireProject();
+        $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
             return;
         }
         $phrase = trim((string) ($_POST['phrase'] ?? ''));
-        $error = $this->validate($phrase, $id);
+        $error = $this->validate($phrase, $id, $projectId);
         if ($error !== null) {
-            $this->renderForm($id, $phrase, $error);
+            $this->renderForm($id, $phrase, $projectId, $error);
             return;
         }
-        Keyword::update($id, $phrase);
+        Keyword::update($id, $projectId, $phrase);
         redirect('index.php');
     }
 
     public function destroy(int $id): void
     {
-        Keyword::delete($id);
+        $projectId = $this->requireProject();
+        Keyword::delete($id, $projectId);
         redirect('index.php');
     }
 
-    private function validate(string $phrase, ?int $ignoreId): ?string
+    private function requireProject(): int
+    {
+        $projectId = activeProjectId();
+        if ($projectId === null) {
+            redirect('index.php?action=project_index');
+        }
+        return $projectId;
+    }
+
+    private function validate(string $phrase, ?int $ignoreId, int $projectId): ?string
     {
         $phrase = trim($phrase);
 
@@ -105,8 +127,7 @@ class KeywordController
         if (preg_match('/[\x00-\x1F\x7F]/', $phrase)) {
             return 'The keyword must not contain control characters.';
         }
-        $existing = Keyword::all();
-        foreach ($existing as $kw) {
+        foreach (Keyword::allForProject($projectId) as $kw) {
             if (mb_strtolower($kw['phrase']) === mb_strtolower($phrase) && $kw['id'] !== $ignoreId) {
                 return 'This keyword already exists.';
             }
@@ -122,11 +143,12 @@ class KeywordController
         return $slug === '' ? 'keyword' : $slug;
     }
 
-    private function renderForm(?int $id, string $phrase, ?string $error = null): void
+    private function renderForm(?int $id, string $phrase, int $projectId, ?string $error = null): void
     {
         $this->render('keywords/form', [
             'id' => $id,
             'phrase' => $phrase,
+            'projectId' => $projectId,
             'error' => $error,
         ], $error !== null ? 400 : 200);
     }
@@ -140,11 +162,13 @@ class KeywordController
         require __DIR__ . '/../../views/footer.php';
     }
 
-    private function renderIndex(?string $addPhrase = '', ?string $addError = null, int $status = 200): void
+    private function renderIndex(int $projectId, ?string $addPhrase = '', ?string $addError = null, int $status = 200): void
     {
-        $keywords = Keyword::withStats();
+        $keywords = Keyword::withStats($projectId);
         $this->render('keywords/index', [
             'keywords' => $keywords,
+            'projectId' => $projectId,
+            'project' => Project::find($projectId),
             'addPhrase' => $addPhrase,
             'addError' => $addError,
         ], $status);

@@ -70,6 +70,47 @@ a {
   color: var(--color-primary);
 }
 
+.project-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.project-switcher {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.project-switch-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.project-switch-link:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.project-switch-link.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
 .site-footer {
   border-top: 1px solid var(--color-border);
   color: var(--color-muted);
@@ -256,6 +297,18 @@ form input[type="text"]:focus {
 .empty {
   color: var(--color-muted);
   padding: 16px 0;
+}
+
+.active-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .error {

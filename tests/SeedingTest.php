@@ -46,12 +46,22 @@ final class SeedingTest extends TestCase
     public function testSeedCreatesConsecutiveDailyHistory(): void
     {
         $days = 30;
-        $total = Seed::run($days, ['end to end']);
+        $summary = Seed::run($days, [
+            ['name' => 'Test Site', 'phrases' => ['end to end']],
+        ]);
 
-        $keywordId = (int) Keyword::all()[0]['id'];
+        $this->assertSame($days, $summary[0]['positions']);
+
+        $projects = Project::all();
+        $this->assertCount(1, $projects);
+        $projectId = (int) $projects[0]['id'];
+
+        $keywords = Keyword::allForProject($projectId);
+        $this->assertCount(1, $keywords);
+        $keywordId = (int) $keywords[0]['id'];
+
         $history = Position::history($keywordId);
 
-        $this->assertSame($days, $total);
         $this->assertCount($days, $history);
 
         $today = new DateTimeImmutable('today');

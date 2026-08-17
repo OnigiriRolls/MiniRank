@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../src/bootstrap.php';
 
 $controller = new KeywordController();
+$projectController = new ProjectController();
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_POST['action'] ?? $_GET['action'] ?? 'index';
@@ -14,13 +15,43 @@ if (isset($_GET['id']) || isset($_POST['id'])) {
     $rawId = $_GET['id'] ?? $_POST['id'];
     if (filter_var($rawId, FILTER_VALIDATE_INT) === false || (int) $rawId <= 0) {
         http_response_code(400);
-        echo 'Bad request: invalid keyword id.';
+        echo 'Bad request: invalid id.';
         exit;
     }
     $id = (int) $rawId;
 }
 
 switch ($action) {
+    case 'project_index':
+        $projectController->index();
+        break;
+    case 'project_create':
+        $projectController->create();
+        break;
+    case 'project_store':
+        if ($method !== 'POST') {
+            redirect('index.php?action=project_index');
+        }
+        $projectController->store();
+        break;
+    case 'project_edit':
+        $projectController->edit($id ?? 0);
+        break;
+    case 'project_update':
+        if ($method !== 'POST') {
+            redirect('index.php?action=project_index');
+        }
+        $projectController->update($id ?? 0);
+        break;
+    case 'project_destroy':
+        if ($method !== 'POST') {
+            redirect('index.php?action=project_index');
+        }
+        $projectController->destroy($id ?? 0);
+        break;
+    case 'project_switch':
+        $projectController->switchProject($id ?? 0);
+        break;
     case 'create':
         $controller->create();
         break;

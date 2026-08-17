@@ -2,6 +2,20 @@
 
 declare(strict_types=1);
 
+function setActiveProject(?int $id): void
+{
+    if ($id === null) {
+        unset($_SESSION['active_project_id']);
+        return;
+    }
+    $_SESSION['active_project_id'] = $id;
+}
+
+function activeProjectId(): ?int
+{
+    return isset($_SESSION['active_project_id']) ? (int) $_SESSION['active_project_id'] : null;
+}
+
 function simulatePosition(?int $previous): int
 {
     if ($previous === null) {

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+session_start();
+
 $config = require __DIR__ . '/../config.php';
 
 function config(string $key, mixed $default = null): mixed

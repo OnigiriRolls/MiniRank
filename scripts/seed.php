@@ -6,19 +6,48 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $days = (int) config('seed_days', 30);
 
-$phrases = [
-    'best running shoes',
-    'best video game',
-    'dutch oven for bread baking',
-    'mechanical keyboard for programmers',
-    'robot vacuum for pet hair',
-    'dash cam with night vision',
-    'ergonomic office chair',
-    'cold brew coffee maker',
-    'trail running backpack',
-    'standing desk converter',
+$projects = [
+    [
+        'name' => "Runner's Hub",
+        'url' => 'https://runners.example.com',
+        'phrases' => [
+            'best running shoes',
+            'trail running backpack',
+            'running socks for marathon',
+        ],
+    ],
+    [
+        'name' => 'Tech & Gaming',
+        'url' => 'https://techgaming.example.com',
+        'phrases' => [
+            'best video game',
+            'mechanical keyboard for programmers',
+            'ergonomic office chair',
+            'dash cam with night vision',
+        ],
+    ],
+    [
+        'name' => 'Kitchen & Home',
+        'url' => 'https://kitchen.example.com',
+        'phrases' => [
+            'dutch oven for bread baking',
+            'robot vacuum for pet hair',
+            'cold brew coffee maker',
+            'standing desk converter',
+        ],
+    ],
 ];
 
-$totalPositions = Seed::run($days, $phrases);
+$summary = Seed::run($days, $projects);
 
-printf("Seeded %d keywords, %d positions\n", count($phrases), $totalPositions);
+$totalKeywords = 0;
+$totalPositions = 0;
+foreach ($summary as $project) {
+    $totalKeywords += $project['keywords'];
+    $totalPositions += $project['positions'];
+}
+
+printf("Seeded %d projects, %d keywords, %d positions\n", count($summary), $totalKeywords, $totalPositions);
+foreach ($summary as $project) {
+    printf("  %s: %d keywords, %d positions\n", $project['name'], $project['keywords'], $project['positions']);
+}

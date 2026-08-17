@@ -6,11 +6,19 @@ class RefreshController
 {
     public function refresh(): void
     {
+        $projectId = activeProjectId();
+        if ($projectId === null) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'No active project.']);
+            exit;
+        }
+
         $today = (new DateTimeImmutable('today'))->format('Y-m-d');
 
         $positions = [];
         $trends = [];
-        foreach (Keyword::all() as $keyword) {
+        foreach (Keyword::allForProject($projectId) as $keyword) {
             $id = (int) $keyword['id'];
             $existing = Position::onDate($id, $today);
 

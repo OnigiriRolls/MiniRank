@@ -2,6 +2,9 @@
 ?>
 <h2>Tracked keywords</h2>
 
+<?php if ($project === null): ?>
+    <p class="empty">No project selected. <a href="index.php?action=project_index">Create a project first.</a></p>
+<?php else: ?>
 <button type="button" id="refresh-positions" class="refresh-button">Refresh positions</button>
 <p id="refresh-status" class="refresh-status" hidden></p>
 
@@ -81,4 +84,5 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+<?php endif; ?>
 <?php endif; ?>

@@ -6,22 +6,25 @@ use PHPUnit\Framework\TestCase;
 
 final class TrendTest extends TestCase
 {
+    private int $projectId;
+
     protected function setUp(): void
     {
         resetDatabase();
         class_exists(Position::class);
+        $this->projectId = Project::create('Trend test project');
     }
 
     public function testEmptyHistoryReturnsNull(): void
     {
-        $keywordId = Keyword::create('empty history');
+        $keywordId = Keyword::create($this->projectId, 'empty history');
 
         $this->assertNull(Position::trend($keywordId));
     }
 
     public function testHistoryTooShortReturnsNull(): void
     {
-        $keywordId = Keyword::create('short history');
+        $keywordId = Keyword::create($this->projectId, 'short history');
 
         $today = new DateTimeImmutable('today');
         for ($i = 0; $i < 7; $i++) {
@@ -49,7 +52,7 @@ final class TrendTest extends TestCase
 
     public function testTrendWiredThroughPosition(): void
     {
-        $keywordId = Keyword::create('wiring check');
+        $keywordId = Keyword::create($this->projectId, 'wiring check');
 
         $today = new DateTimeImmutable('today');
         $rows = [
