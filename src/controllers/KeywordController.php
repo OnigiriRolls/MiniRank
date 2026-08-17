@@ -38,6 +38,25 @@ class KeywordController
         ]);
     }
 
+    public function exportCsv(int $id): void
+    {
+        $keyword = Keyword::find($id);
+        if ($keyword === null) {
+            $this->render('notfound', [], 404);
+            return;
+        }
+
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="positions-' . $this->slugify($keyword['phrase']) . '.csv"');
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['Date', 'Position'], ';');
+        foreach (Position::history($id) as $row) {
+            fputcsv($out, [$row['date'], (int) $row['position']], ';');
+        }
+        fclose($out);
+        exit;
+    }
+
     public function store(): void
     {
         $phrase = trim((string) ($_POST['phrase'] ?? ''));
@@ -93,6 +112,14 @@ class KeywordController
             }
         }
         return null;
+    }
+
+    private function slugify(string $phrase): string
+    {
+        $slug = mb_strtolower(trim($phrase));
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = trim($slug, '-');
+        return $slug === '' ? 'keyword' : $slug;
     }
 
     private function renderForm(?int $id, string $phrase, ?string $error = null): void

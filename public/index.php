@@ -55,6 +55,9 @@ switch ($action) {
     case 'show':
         $controller->show($id ?? 0);
         break;
+    case 'export':
+        $controller->exportCsv($id ?? 0);
+        break;
     default:
         $controller->index();
 }
