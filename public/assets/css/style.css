@@ -220,6 +220,12 @@ form input[type="text"]:focus {
   color: var(--color-danger);
 }
 
+.chart-wrapper {
+  position: relative;
+  height: 260px;
+  margin-bottom: 16px;
+}
+
 .keyword-table {
   width: 100%;
   border-collapse: collapse;

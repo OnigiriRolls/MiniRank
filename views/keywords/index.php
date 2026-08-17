@@ -17,6 +17,10 @@
     <button type="submit">Add</button>
 </form>
 
+<?php if (($addError ?? null) !== null): ?>
+    <p id="add-error" class="error"><?= e($addError) ?></p>
+<?php endif; ?>
+
 <?php if (empty($keywords)): ?>
     <p class="empty">No keywords yet. Add your first one above.</p>
 <?php else: ?>

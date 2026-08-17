@@ -23,4 +23,25 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <?php
+    $labels = [];
+    $values = [];
+    foreach (array_reverse($history) as $row) {
+        $labels[] = $row['date'];
+        $values[] = (int) $row['position'];
+    }
+    $chartData = json_encode(
+        ['labels' => $labels, 'values' => $values],
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    );
+    ?>
+    <div class="chart-wrapper">
+        <canvas id="position-chart" aria-label="Position history chart" role="img"></canvas>
+    </div>
+    <script type="application/json" id="position-chart-data">
+        <?= $chartData ?>
+    </script>
 <?php endif; ?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>

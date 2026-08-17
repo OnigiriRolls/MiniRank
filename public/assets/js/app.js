@@ -100,3 +100,82 @@
             });
     });
 })();
+
+(function () {
+    var canvas = document.getElementById("position-chart");
+    var dataEl = document.getElementById("position-chart-data");
+
+    if (!canvas || !dataEl) {
+        return;
+    }
+
+    var data;
+    try {
+        data = JSON.parse(dataEl.textContent);
+    } catch (e) {
+        return;
+    }
+
+    new Chart(canvas, {
+        type: "line",
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: "Position",
+                    data: data.values,
+                    borderColor: "#4a7dbd",
+                    backgroundColor: "rgba(74, 125, 189, 0.15)",
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    tension: 0.2,
+                    borderWidth: 2,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    reverse: true,
+                    ticks: {
+                        precision: 0,
+                        maxTicksLimit: 8,
+                    },
+                },
+                x: {
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 0,
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return "Position: " + context.parsed.y;
+                        },
+                    },
+                },
+            },
+        },
+    });
+})();
+
+(function () {
+    var errorEl = document.getElementById("add-error");
+    var input = document.querySelector('.add-form input[name="phrase"]');
+
+    if (!errorEl || !input) {
+        return;
+    }
+
+    input.addEventListener("input", function () {
+        errorEl.hidden = true;
+    });
+})();

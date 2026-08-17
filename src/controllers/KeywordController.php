@@ -43,7 +43,7 @@ class KeywordController
         $phrase = trim((string) ($_POST['phrase'] ?? ''));
         $error = $this->validate($phrase, null);
         if ($error !== null) {
-            $this->renderForm(null, $phrase, $error);
+            $this->renderIndex($phrase, $error, 400);
             return;
         }
         Keyword::create($phrase);
@@ -111,5 +111,15 @@ class KeywordController
         require __DIR__ . '/../../views/header.php';
         require __DIR__ . '/../../views/' . $view . '.php';
         require __DIR__ . '/../../views/footer.php';
+    }
+
+    private function renderIndex(?string $addPhrase = '', ?string $addError = null, int $status = 200): void
+    {
+        $keywords = Keyword::withStats();
+        $this->render('keywords/index', [
+            'keywords' => $keywords,
+            'addPhrase' => $addPhrase,
+            'addError' => $addError,
+        ], $status);
     }
 }
