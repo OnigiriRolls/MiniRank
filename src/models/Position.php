@@ -2,6 +2,21 @@
 
 declare(strict_types=1);
 
+function trendFromValues(?int $current, ?int $sevenDaysAgo): ?string
+{
+    if ($current === null || $sevenDaysAgo === null) {
+        return null;
+    }
+
+    if ($current < $sevenDaysAgo) {
+        return 'improved';
+    }
+    if ($current > $sevenDaysAgo) {
+        return 'declined';
+    }
+    return 'stable';
+}
+
 class Position
 {
     public static function latest(int $keywordId): ?int
@@ -42,17 +57,7 @@ class Position
             }
         }
 
-        if ($sevenDaysAgo === null) {
-            return null;
-        }
-
-        if ($current < $sevenDaysAgo) {
-            return 'improved';
-        }
-        if ($current > $sevenDaysAgo) {
-            return 'declined';
-        }
-        return 'stable';
+        return trendFromValues($current, $sevenDaysAgo);
     }
 
     public static function recent(int $keywordId, int $limit): array

@@ -15,3 +15,7 @@ Thumbs.db
 .env
 .env.*
 config.local.php
+
+# Composer / PHPUnit
+vendor/
+phpunit-cache/
