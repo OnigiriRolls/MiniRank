@@ -6,9 +6,19 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $controller = new KeywordController();
 $projectController = new ProjectController();
+$authController = new AuthController();
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_POST['action'] ?? $_GET['action'] ?? 'index';
+
+if ($method === 'POST') {
+    verifyCsrf($_POST['csrf_token'] ?? null);
+}
+
+$publicActions = ['register', 'register_store', 'login', 'login_store'];
+if (!in_array($action, $publicActions, true) && !isLoggedIn()) {
+    redirect('index.php?action=login');
+}
 
 $id = null;
 if (isset($_GET['id']) || isset($_POST['id'])) {
@@ -22,6 +32,36 @@ if (isset($_GET['id']) || isset($_POST['id'])) {
 }
 
 switch ($action) {
+    case 'register':
+        if (isLoggedIn()) {
+            redirect('index.php');
+        }
+        $authController->register();
+        break;
+    case 'register_store':
+        if ($method !== 'POST') {
+            redirect('index.php?action=register');
+        }
+        $authController->store();
+        break;
+    case 'login':
+        if (isLoggedIn()) {
+            redirect('index.php');
+        }
+        $authController->login();
+        break;
+    case 'login_store':
+        if ($method !== 'POST') {
+            redirect('index.php?action=login');
+        }
+        $authController->authenticate();
+        break;
+    case 'logout':
+        if ($method !== 'POST') {
+            redirect('index.php');
+        }
+        $authController->logout();
+        break;
     case 'project_index':
         $projectController->index();
         break;

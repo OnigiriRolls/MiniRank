@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class Seed
 {
-    public static function run(int $days, array $projects): array
+    public static function run(int $days, array $projects, int $userId): array
     {
         db()->exec('DELETE FROM projects');
 
@@ -18,7 +18,7 @@ class Seed
             $url = !empty($project['url']) ? (string) $project['url'] : null;
             $phrases = (array) ($project['phrases'] ?? []);
 
-            $projectId = Project::create($name, $url);
+            $projectId = Project::create($userId, $name, $url);
 
             $keywordCount = 0;
             $positionCount = 0;

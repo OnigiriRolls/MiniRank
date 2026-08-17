@@ -11,7 +11,7 @@ class KeywordController
         $this->render('keywords/index', [
             'keywords' => $keywords,
             'projectId' => $projectId,
-            'project' => Project::find($projectId),
+            'project' => Project::find($projectId, currentUserId()),
         ]);
     }
 
@@ -168,7 +168,7 @@ class KeywordController
         $this->render('keywords/index', [
             'keywords' => $keywords,
             'projectId' => $projectId,
-            'project' => Project::find($projectId),
+            'project' => Project::find($projectId, currentUserId()),
             'addPhrase' => $addPhrase,
             'addError' => $addError,
         ], $status);

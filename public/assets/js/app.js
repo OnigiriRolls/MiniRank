@@ -105,12 +105,16 @@ function applyFilters() {
             status.hidden = false;
         }
 
+        var params = new URLSearchParams();
+        params.set("action", "refresh");
+        params.set("csrf_token", button.dataset.csrf || "");
+
         fetch("index.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: "action=refresh",
+            body: params.toString(),
         })
             .then(function (response) {
                 if (!response.ok) {

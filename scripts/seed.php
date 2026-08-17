@@ -6,6 +6,13 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $days = (int) config('seed_days', 30);
 
+$user = User::findByUsername('demo');
+if ($user === null) {
+    printf("Demo user 'demo' not found. Change the username in the script to an existing user.\n");
+    return;
+}
+$userId = (int) $user['id'];
+
 $projects = [
     [
         'name' => "Runner's Hub",
@@ -38,7 +45,7 @@ $projects = [
     ],
 ];
 
-$summary = Seed::run($days, $projects);
+$summary = Seed::run($days, $projects, $userId);
 
 $totalKeywords = 0;
 $totalPositions = 0;

@@ -22,19 +22,33 @@ function columnExists(PDO $pdo, string $table, string $column): bool
 
 function createSchema(PDO $pdo): void
 {
-    $needsMigration = tableExists($pdo, 'keywords') && !columnExists($pdo, 'keywords', 'project_id');
+    $needsProjectsMigration = tableExists($pdo, 'projects') && !columnExists($pdo, 'projects', 'user_id');
+    $needsKeywordsMigration = tableExists($pdo, 'keywords') && !columnExists($pdo, 'keywords', 'project_id');
 
-    if ($needsMigration) {
+    if ($needsProjectsMigration || $needsKeywordsMigration) {
         $pdo->exec('DROP TABLE positions');
         $pdo->exec('DROP TABLE keywords');
+        $pdo->exec('DROP TABLE projects');
     }
+
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS users (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            username      TEXT NOT NULL UNIQUE COLLATE NOCASE,
+            password_hash TEXT NOT NULL,
+            created_at    TEXT NOT NULL DEFAULT (datetime(\'now\'))
+        )'
+    );
 
     $pdo->exec(
         'CREATE TABLE IF NOT EXISTS projects (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
-            name       TEXT NOT NULL UNIQUE,
+            user_id    INTEGER NOT NULL,
+            name       TEXT NOT NULL,
             url        TEXT,
-            created_at TEXT NOT NULL DEFAULT (datetime(\'now\'))
+            created_at TEXT NOT NULL DEFAULT (datetime(\'now\')),
+            UNIQUE(user_id, name),
+            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         )'
     );
 
@@ -60,9 +74,4 @@ function createSchema(PDO $pdo): void
         )'
     );
 
-    $hasProjects = (int) $pdo->query('SELECT COUNT(*) FROM projects')->fetchColumn();
-    if ($hasProjects === 0) {
-        $stmt = $pdo->prepare('INSERT INTO projects (name) VALUES (:name)');
-        $stmt->execute([':name' => 'Default website']);
-    }
 }

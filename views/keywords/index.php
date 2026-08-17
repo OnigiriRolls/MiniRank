@@ -5,7 +5,7 @@
 <?php if ($project === null): ?>
     <p class="empty">No project selected. <a href="index.php?action=project_index">Create a project first.</a></p>
 <?php else: ?>
-<button type="button" id="refresh-positions" class="refresh-button">Refresh positions</button>
+<button type="button" id="refresh-positions" class="refresh-button" data-csrf="<?= e(csrfToken()) ?>">Refresh positions</button>
 <p id="refresh-status" class="refresh-status" hidden></p>
 
 <div class="filter-form" role="search" aria-label="Filter keywords">
@@ -31,6 +31,7 @@
 
 <form method="post" action="index.php" class="add-form">
     <input type="hidden" name="action" value="store">
+    <?= csrfField() ?>
     <input
         type="text"
         name="phrase"
@@ -77,6 +78,7 @@
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this keyword?');">
                             <input type="hidden" name="action" value="destroy">
                             <input type="hidden" name="id" value="<?= (int) $kw['id'] ?>">
+                            <?= csrfField() ?>
                             <button type="submit" class="link-danger">Delete</button>
                         </form>
                     </td>

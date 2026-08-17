@@ -6,7 +6,7 @@ class ProjectController
 {
     public function index(): void
     {
-        $projects = Project::all();
+        $projects = Project::all(currentUserId());
         foreach ($projects as &$project) {
             $project['keyword_count'] = Project::keywordCount((int) $project['id']);
         }
@@ -14,7 +14,6 @@ class ProjectController
 
         $this->render('projects/index', [
             'projects' => $projects,
-            'activeProjectId' => activeProjectId(),
         ]);
     }
 
@@ -25,7 +24,7 @@ class ProjectController
 
     public function edit(int $id): void
     {
-        $project = Project::find($id);
+        $project = Project::find($id, currentUserId());
         if ($project === null) {
             $this->render('notfound', [], 404);
             return;
@@ -43,13 +42,13 @@ class ProjectController
             $this->renderForm(null, $name, $url, $error);
             return;
         }
-        Project::create($name, $url);
+        Project::create(currentUserId(), $name, $url);
         redirect('index.php?action=project_index');
     }
 
     public function update(int $id): void
     {
-        $project = Project::find($id);
+        $project = Project::find($id, currentUserId());
         if ($project === null) {
             $this->render('notfound', [], 404);
             return;
@@ -62,13 +61,13 @@ class ProjectController
             $this->renderForm($id, $name, $url, $error);
             return;
         }
-        Project::update($id, $name, $url);
+        Project::update($id, currentUserId(), $name, $url);
         redirect('index.php?action=project_index');
     }
 
     public function destroy(int $id): void
     {
-        Project::delete($id);
+        Project::delete($id, currentUserId());
         if (activeProjectId() === $id) {
             setActiveProject(null);
         }
@@ -77,7 +76,7 @@ class ProjectController
 
     public function switchProject(int $id): void
     {
-        $project = Project::find($id);
+        $project = Project::find($id, currentUserId());
         if ($project === null) {
             $this->render('notfound', [], 404);
             return;
@@ -113,7 +112,7 @@ class ProjectController
                 return 'The URL must not contain control characters.';
             }
         }
-        foreach (Project::all() as $project) {
+        foreach (Project::all(currentUserId()) as $project) {
             if (mb_strtolower($project['name']) === mb_strtolower($name) && (int) $project['id'] !== $ignoreId) {
                 return 'This project already exists.';
             }

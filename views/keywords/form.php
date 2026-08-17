@@ -8,6 +8,7 @@
 
 <form method="post" action="index.php" class="keyword-form">
     <input type="hidden" name="action" value="update">
+    <?= csrfField() ?>
     <?php if ($id !== null): ?>
         <input type="hidden" name="id" value="<?= (int) $id ?>">
     <?php endif; ?>

@@ -21,9 +21,6 @@
                 <tr>
                     <td data-label="Name">
                         <a href="index.php?action=project_switch&amp;id=<?= (int) $project['id'] ?>"><?= e($project['name']) ?></a>
-                        <?php if ((int) $project['id'] === $activeProjectId): ?>
-                            <span class="active-badge">active</span>
-                        <?php endif; ?>
                     </td>
                     <td data-label="URL"><?= $project['url'] !== null ? e($project['url']) : '&ndash;' ?></td>
                     <td data-label="Keywords"><?= (int) $project['keyword_count'] ?></td>
@@ -33,6 +30,7 @@
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this project and all of its keywords?');">
                             <input type="hidden" name="action" value="project_destroy">
                             <input type="hidden" name="id" value="<?= (int) $project['id'] ?>">
+                            <?= csrfField() ?>
                             <button type="submit" class="link-danger">Delete</button>
                         </form>
                     </td>
