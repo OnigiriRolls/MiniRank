@@ -5,6 +5,27 @@
 <button type="button" id="refresh-positions" class="refresh-button">Refresh positions</button>
 <p id="refresh-status" class="refresh-status" hidden></p>
 
+<div class="filter-form" role="search" aria-label="Filter keywords">
+    <label class="filter-field">
+        <span>Position from</span>
+        <input type="number" id="position-min" min="1" max="100" placeholder="1">
+    </label>
+    <label class="filter-field">
+        <span>Position to</span>
+        <input type="number" id="position-max" min="1" max="100" placeholder="100">
+    </label>
+    <label class="filter-field">
+        <span>Movement</span>
+        <select id="movement-filter">
+            <option value="">Any</option>
+            <option value="improved">Improved</option>
+            <option value="declined">Declined</option>
+            <option value="stable">Stable</option>
+        </select>
+    </label>
+    <button type="button" id="clear-filters" class="button-link">Clear filters</button>
+</div>
+
 <form method="post" action="index.php" class="add-form">
     <input type="hidden" name="action" value="store">
     <input
@@ -29,7 +50,7 @@
         id="keyword-search"
         placeholder="Search keywords"
         class="keyword-search">
-    <p id="no-results" class="empty" hidden>No keywords match your search.</p>
+    <p id="no-results" class="empty" hidden>No keywords match your filters.</p>
     <table class="keyword-table">
         <thead>
             <tr>
@@ -41,7 +62,10 @@
         </thead>
         <tbody>
             <?php foreach ($keywords as $kw): ?>
-                <tr data-keyword-id="<?= (int) $kw['id'] ?>">
+                <tr
+                    data-keyword-id="<?= (int) $kw['id'] ?>"
+                    data-position="<?= $kw['current_position'] !== null ? (int) $kw['current_position'] : 0 ?>"
+                    data-trend="<?= e($kw['trend'] ?? '') ?>">
                     <td data-label="Keyword"><a href="index.php?action=show&id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
                     <td data-label="Current Position"><?= $kw['current_position'] !== null ? (int) $kw['current_position'] : '&ndash;' ?></td>
                     <td data-label="7-day Trend"><?= $kw['trend'] === null ? '&ndash;' : e($kw['trend']) ?></td>

@@ -1,32 +1,93 @@
-(function () {
-    var searchInput = document.getElementById("keyword-search");
-    var noResults = document.getElementById("no-results");
-
-    if (!searchInput) {
-        return;
-    }
-
+function applyFilters() {
     var table = document.querySelector(".keyword-table");
     var rows = table ? table.querySelectorAll("tbody tr") : [];
+    var noResults = document.getElementById("no-results");
 
-    searchInput.addEventListener("input", function () {
-        var query = searchInput.value.trim().toLowerCase();
-        var visible = 0;
+    var searchInput = document.getElementById("keyword-search");
+    var query = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
-        for (var i = 0; i < rows.length; i++) {
-            var cell = rows[i].querySelector("td");
-            var phrase = cell ? cell.textContent.toLowerCase() : "";
-            var show = query === "" || phrase.indexOf(query) !== -1;
-            rows[i].style.display = show ? "" : "none";
-            if (show) {
-                visible++;
+    var minInput = document.getElementById("position-min");
+    var maxInput = document.getElementById("position-max");
+    var min = minInput ? parseInt(minInput.value, 10) : NaN;
+    var max = maxInput ? parseInt(maxInput.value, 10) : NaN;
+    var minSet = minInput ? minInput.value !== "" : false;
+    var maxSet = maxInput ? maxInput.value !== "" : false;
+
+    var movementSelect = document.getElementById("movement-filter");
+    var movement = movementSelect ? movementSelect.value : "";
+
+    var rangeInvalid = minSet && maxSet && min > max;
+
+    var visible = 0;
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+
+        var cell = row.querySelector("td");
+        var phrase = cell ? cell.textContent.toLowerCase() : "";
+        var matchesText = query === "" || phrase.indexOf(query) !== -1;
+
+        var position = parseInt(row.getAttribute("data-position") || "0", 10) || 0;
+        var matchesRange;
+        if (rangeInvalid) {
+            matchesRange = false;
+        } else if (!minSet && !maxSet) {
+            matchesRange = true;
+        } else if (position === 0) {
+            matchesRange = false;
+        } else {
+            matchesRange =
+                (minSet ? position >= min : true) && (maxSet ? position <= max : true);
+        }
+
+        var trend = row.getAttribute("data-trend") || "";
+        var matchesMovement = movement === "" || trend === movement;
+
+        var show = matchesText && matchesRange && matchesMovement;
+        row.style.display = show ? "" : "none";
+        if (show) {
+            visible++;
+        }
+    }
+
+    if (noResults) {
+        noResults.hidden = visible !== 0;
+    }
+}
+
+(function () {
+    var searchInput = document.getElementById("keyword-search");
+    var minInput = document.getElementById("position-min");
+    var maxInput = document.getElementById("position-max");
+    var movementSelect = document.getElementById("movement-filter");
+    var clearButton = document.getElementById("clear-filters");
+
+    if (searchInput) {
+        searchInput.addEventListener("input", applyFilters);
+    }
+    if (minInput) {
+        minInput.addEventListener("input", applyFilters);
+    }
+    if (maxInput) {
+        maxInput.addEventListener("input", applyFilters);
+    }
+    if (movementSelect) {
+        movementSelect.addEventListener("change", applyFilters);
+    }
+    if (clearButton) {
+        clearButton.addEventListener("click", function () {
+            if (minInput) {
+                minInput.value = "";
             }
-        }
-
-        if (noResults) {
-            noResults.hidden = visible !== 0;
-        }
-    });
+            if (maxInput) {
+                maxInput.value = "";
+            }
+            if (movementSelect) {
+                movementSelect.value = "";
+            }
+            applyFilters();
+        });
+    }
 })();
 
 (function () {
@@ -88,7 +149,16 @@
                                 ? "\u2013"
                                 : trends[id];
                     }
+                    row.setAttribute("data-position", String(positions[id]));
+                    row.setAttribute(
+                        "data-trend",
+                        trends[id] === null || trends[id] === undefined
+                            ? ""
+                            : String(trends[id])
+                    );
                 }
+
+                applyFilters();
             })
             .catch(function () {
                 if (status) {
