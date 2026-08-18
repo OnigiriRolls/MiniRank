@@ -13,7 +13,20 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <h1><a href="index.php?action=project_index"><?= e(config('site_name', 'MiniRank')) ?></a></h1>
+            <div class="header-top">
+                <h1><a href="index.php?action=project_index"><?= e(config('site_name', 'MiniRank')) ?></a></h1>
+                <?php if (isLoggedIn()): ?>
+                    <?php $user = currentUser(); ?>
+                    <div class="account-box">
+                        <span class="auth-username"><?= e($user['username']) ?></span>
+                        <form method="post" action="index.php" class="inline-form">
+                            <input type="hidden" name="action" value="logout">
+                            <?= csrfField() ?>
+                            <button type="submit" class="button-link">Log out</button>
+                        </form>
+                    </div>
+                <?php endif; ?>
+            </div>
             <?php if (isLoggedIn()): ?>
                 <nav class="project-nav" aria-label="Projects">
                     <a class="button-link" href="index.php?action=project_index">Projects</a>
@@ -36,16 +49,6 @@
                 <nav class="auth-nav" aria-label="Account">
                     <a class="button-link" href="index.php?action=login">Log in</a>
                     <a class="button-link" href="index.php?action=register">Register</a>
-                </nav>
-            <?php else: ?>
-                <?php $user = currentUser(); ?>
-                <nav class="auth-nav" aria-label="Account">
-                    <span class="auth-username"><?= e($user['username']) ?></span>
-                    <form method="post" action="index.php" class="inline-form">
-                        <input type="hidden" name="action" value="logout">
-                        <?= csrfField() ?>
-                        <button type="submit" class="button-link">Log out</button>
-                    </form>
                 </nav>
             <?php endif; ?>
         </div>
