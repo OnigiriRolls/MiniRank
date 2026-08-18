@@ -11,5 +11,6 @@ function resetDatabase(): void
     db()->exec('DELETE FROM positions');
     db()->exec('DELETE FROM keywords');
     db()->exec('DELETE FROM projects');
+    db()->exec('DELETE FROM users');
     $_SESSION = [];
 }

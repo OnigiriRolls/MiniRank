@@ -6,13 +6,15 @@ use PHPUnit\Framework\TestCase;
 
 final class TrendTest extends TestCase
 {
+    private int $userId;
     private int $projectId;
 
     protected function setUp(): void
     {
         resetDatabase();
         class_exists(Position::class);
-        $this->projectId = Project::create('Trend test project');
+        $this->userId = User::create('trend-tester', 'not-a-real-hash');
+        $this->projectId = Project::create($this->userId, 'Trend test project');
     }
 
     public function testEmptyHistoryReturnsNull(): void

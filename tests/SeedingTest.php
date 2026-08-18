@@ -6,9 +6,12 @@ use PHPUnit\Framework\TestCase;
 
 final class SeedingTest extends TestCase
 {
+    private int $userId;
+
     protected function setUp(): void
     {
         resetDatabase();
+        $this->userId = User::create('seeding-tester', 'not-a-real-hash');
     }
 
     public function testNullPreviousAlwaysInRange(): void
@@ -48,11 +51,11 @@ final class SeedingTest extends TestCase
         $days = 30;
         $summary = Seed::run($days, [
             ['name' => 'Test Site', 'phrases' => ['end to end']],
-        ]);
+        ], $this->userId);
 
         $this->assertSame($days, $summary[0]['positions']);
 
-        $projects = Project::all();
+        $projects = Project::all($this->userId);
         $this->assertCount(1, $projects);
         $projectId = (int) $projects[0]['id'];
 
