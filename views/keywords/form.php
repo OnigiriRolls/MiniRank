@@ -8,6 +8,7 @@
 
 <form method="post" action="index.php" class="keyword-form">
     <input type="hidden" name="action" value="update">
+    <input type="hidden" name="project_id" value="<?= (int) $projectId ?>">
     <?= csrfField() ?>
     <?php if ($id !== null): ?>
         <input type="hidden" name="id" value="<?= (int) $id ?>">
@@ -23,6 +24,6 @@
         placeholder="e.g. best running shoes">
     <div class="form-actions">
         <button type="submit">Save</button>
-        <a href="index.php" class="button-link">Cancel</a>
+        <a href="index.php?action=index&amp;project_id=<?= (int) $projectId ?>" class="button-link">Cancel</a>
     </div>
 </form>

@@ -2,20 +2,6 @@
 
 declare(strict_types=1);
 
-function setActiveProject(?int $id): void
-{
-    if ($id === null) {
-        unset($_SESSION['active_project_id']);
-        return;
-    }
-    $_SESSION['active_project_id'] = $id;
-}
-
-function activeProjectId(): ?int
-{
-    return isset($_SESSION['active_project_id']) ? (int) $_SESSION['active_project_id'] : null;
-}
-
 function loginUser(int $id): void
 {
     session_regenerate_id(true);
@@ -29,7 +15,7 @@ function isLoggedIn(): bool
 
 function logoutUser(): void
 {
-    unset($_SESSION['user_id'], $_SESSION['active_project_id']);
+    unset($_SESSION['user_id']);
     session_regenerate_id(true);
 }
 

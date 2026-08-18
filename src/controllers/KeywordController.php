@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 class KeywordController
 {
-    public function index(): void
+    public function index(int $projectId): void
     {
-        $projectId = $this->requireProject();
         $keywords = Keyword::withStats($projectId);
         $this->render('keywords/index', [
             'keywords' => $keywords,
@@ -15,15 +14,13 @@ class KeywordController
         ]);
     }
 
-    public function create(): void
+    public function create(int $projectId): void
     {
-        $projectId = $this->requireProject();
         $this->renderForm(null, '', $projectId);
     }
 
-    public function edit(int $id): void
+    public function edit(int $projectId, int $id): void
     {
-        $projectId = $this->requireProject();
         $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
@@ -32,9 +29,8 @@ class KeywordController
         $this->renderForm($keyword['id'], $keyword['phrase'], $projectId);
     }
 
-    public function show(int $id): void
+    public function show(int $projectId, int $id): void
     {
-        $projectId = $this->requireProject();
         $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
@@ -47,9 +43,8 @@ class KeywordController
         ]);
     }
 
-    public function exportCsv(int $id): void
+    public function exportCsv(int $projectId, int $id): void
     {
-        $projectId = $this->requireProject();
         $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
@@ -67,9 +62,8 @@ class KeywordController
         exit;
     }
 
-    public function store(): void
+    public function store(int $projectId): void
     {
-        $projectId = $this->requireProject();
         $phrase = trim((string) ($_POST['phrase'] ?? ''));
         $error = $this->validate($phrase, null, $projectId);
         if ($error !== null) {
@@ -77,12 +71,11 @@ class KeywordController
             return;
         }
         Keyword::create($projectId, $phrase);
-        redirect('index.php');
+        redirect('index.php?action=index&project_id=' . $projectId);
     }
 
-    public function update(int $id): void
+    public function update(int $projectId, int $id): void
     {
-        $projectId = $this->requireProject();
         $keyword = Keyword::find($id, $projectId);
         if ($keyword === null) {
             $this->render('notfound', [], 404);
@@ -95,23 +88,13 @@ class KeywordController
             return;
         }
         Keyword::update($id, $projectId, $phrase);
-        redirect('index.php');
+        redirect('index.php?action=index&project_id=' . $projectId);
     }
 
-    public function destroy(int $id): void
+    public function destroy(int $projectId, int $id): void
     {
-        $projectId = $this->requireProject();
         Keyword::delete($id, $projectId);
-        redirect('index.php');
-    }
-
-    private function requireProject(): int
-    {
-        $projectId = activeProjectId();
-        if ($projectId === null) {
-            redirect('index.php?action=project_index');
-        }
-        return $projectId;
+        redirect('index.php?action=index&project_id=' . $projectId);
     }
 
     private function validate(string $phrase, ?int $ignoreId, int $projectId): ?string

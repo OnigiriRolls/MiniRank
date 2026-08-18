@@ -26,13 +26,6 @@ class Project
         return (int) db()->lastInsertId();
     }
 
-    public static function createDefault(int $userId): int
-    {
-        $stmt = db()->prepare('INSERT INTO projects (user_id, name) VALUES (:user_id, :name)');
-        $stmt->execute([':user_id' => $userId, ':name' => 'Default website']);
-        return (int) db()->lastInsertId();
-    }
-
     public static function update(int $id, int $userId, string $name, ?string $url = null): bool
     {
         $stmt = db()->prepare('UPDATE projects SET name = :name, url = :url WHERE id = :id AND user_id = :user_id');

@@ -28,6 +28,5 @@
         autocomplete="current-password">
     <div class="form-actions">
         <button type="submit">Log in</button>
-        <a href="index.php?action=register" class="button-link">Register</a>
     </div>
 </form>

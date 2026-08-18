@@ -2,7 +2,7 @@
 ?>
 <h2><?= e($keyword['phrase']) ?></h2>
 
-<p><a href="index.php">Back to keyword list</a> <a class="button-link" href="index.php?action=export&amp;id=<?= (int) $keyword['id'] ?>">Export CSV</a></p>
+<p><a href="index.php?action=index&amp;project_id=<?= (int) $projectId ?>">Back to keyword list</a> <a class="button-link" href="index.php?action=export&amp;project_id=<?= (int) $projectId ?>&amp;id=<?= (int) $keyword['id'] ?>">Export CSV</a></p>
 
 <?php if (empty($history)): ?>
     <p class="empty">No position history for this keyword yet.</p>

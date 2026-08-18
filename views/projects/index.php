@@ -20,12 +20,12 @@
             <?php foreach ($projects as $project): ?>
                 <tr>
                     <td data-label="Name">
-                        <a href="index.php?action=project_switch&amp;id=<?= (int) $project['id'] ?>"><?= e($project['name']) ?></a>
+                        <a href="index.php?action=index&amp;project_id=<?= (int) $project['id'] ?>"><?= e($project['name']) ?></a>
                     </td>
                     <td data-label="URL"><?= $project['url'] !== null ? e($project['url']) : '&ndash;' ?></td>
                     <td data-label="Keywords"><?= (int) $project['keyword_count'] ?></td>
                     <td class="actions" data-label="Actions">
-                        <a href="index.php?action=project_switch&amp;id=<?= (int) $project['id'] ?>">View</a>
+                        <a href="index.php?action=index&amp;project_id=<?= (int) $project['id'] ?>">View</a>
                         <a href="index.php?action=project_edit&amp;id=<?= (int) $project['id'] ?>">Edit</a>
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this project and all of its keywords?');">
                             <input type="hidden" name="action" value="project_destroy">

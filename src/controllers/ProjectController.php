@@ -68,21 +68,7 @@ class ProjectController
     public function destroy(int $id): void
     {
         Project::delete($id, currentUserId());
-        if (activeProjectId() === $id) {
-            setActiveProject(null);
-        }
         redirect('index.php?action=project_index');
-    }
-
-    public function switchProject(int $id): void
-    {
-        $project = Project::find($id, currentUserId());
-        if ($project === null) {
-            $this->render('notfound', [], 404);
-            return;
-        }
-        setActiveProject($id);
-        redirect('index.php');
     }
 
     private function normalizeUrl(mixed $raw): ?string

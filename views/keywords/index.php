@@ -5,7 +5,7 @@
 <?php if ($project === null): ?>
     <p class="empty">No project selected. <a href="index.php?action=project_index">Create a project first.</a></p>
 <?php else: ?>
-<button type="button" id="refresh-positions" class="refresh-button" data-csrf="<?= e(csrfToken()) ?>">Refresh positions</button>
+<button type="button" id="refresh-positions" class="refresh-button" data-csrf="<?= e(csrfToken()) ?>" data-project-id="<?= (int) $projectId ?>">Refresh positions</button>
 <p id="refresh-status" class="refresh-status" hidden></p>
 
 <div class="filter-form" role="search" aria-label="Filter keywords">
@@ -31,6 +31,7 @@
 
 <form method="post" action="index.php" class="add-form">
     <input type="hidden" name="action" value="store">
+    <input type="hidden" name="project_id" value="<?= (int) $projectId ?>">
     <?= csrfField() ?>
     <input
         type="text"
@@ -70,11 +71,11 @@
                     data-keyword-id="<?= (int) $kw['id'] ?>"
                     data-position="<?= $kw['current_position'] !== null ? (int) $kw['current_position'] : 0 ?>"
                     data-trend="<?= e($kw['trend'] ?? '') ?>">
-                    <td data-label="Keyword"><a href="index.php?action=show&id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
+                    <td data-label="Keyword"><a href="index.php?action=show&amp;project_id=<?= (int) $projectId ?>&amp;id=<?= (int) $kw['id'] ?>"><?= e($kw['phrase']) ?></a></td>
                     <td data-label="Current Position"><?= $kw['current_position'] !== null ? (int) $kw['current_position'] : '&ndash;' ?></td>
                     <td data-label="7-day Trend"><?= $kw['trend'] === null ? '&ndash;' : e($kw['trend']) ?></td>
                     <td class="actions" data-label="Actions">
-                        <a href="index.php?action=edit&id=<?= (int) $kw['id'] ?>">Edit</a>
+                        <a href="index.php?action=edit&amp;project_id=<?= (int) $projectId ?>&amp;id=<?= (int) $kw['id'] ?>">Edit</a>
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this keyword?');">
                             <input type="hidden" name="action" value="destroy">
                             <input type="hidden" name="id" value="<?= (int) $kw['id'] ?>">

@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 class RefreshController
 {
-    public function refresh(): void
+    public function refresh(int $projectId): void
     {
-        $projectId = activeProjectId();
-        if ($projectId === null) {
-            http_response_code(400);
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'No active project.']);
-            exit;
-        }
-
         $today = (new DateTimeImmutable('today'))->format('Y-m-d');
 
         $positions = [];

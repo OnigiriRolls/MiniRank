@@ -107,6 +107,7 @@ function applyFilters() {
 
         var params = new URLSearchParams();
         params.set("action", "refresh");
+        params.set("project_id", button.dataset.projectId || "");
         params.set("csrf_token", button.dataset.csrf || "");
 
         fetch("index.php", {

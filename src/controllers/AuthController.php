@@ -49,7 +49,6 @@ class AuthController
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $userId = User::create($username, $hash);
-        Project::createDefault($userId);
         loginUser($userId);
         redirect('index.php');
     }

@@ -23,7 +23,7 @@
                             <li>
                                 <a
                                     class="project-switch-link<?= $isSelected ? ' is-selected' : '' ?>"
-                                    href="index.php?action=project_switch&amp;id=<?= (int) $project['id'] ?>"
+                                    href="index.php?action=index&amp;project_id=<?= (int) $project['id'] ?>"
                                     <?= $isSelected ? 'aria-current="page"' : '' ?>>
                                     <?= e($project['name']) ?>
                                 </a>

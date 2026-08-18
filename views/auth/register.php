@@ -37,6 +37,5 @@
         autocomplete="new-password">
     <div class="form-actions">
         <button type="submit">Create account</button>
-        <a href="index.php?action=login" class="button-link">Log in</a>
     </div>
 </form>

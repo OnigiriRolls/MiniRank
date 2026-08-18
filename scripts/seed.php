@@ -6,7 +6,8 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $days = (int) config('seed_days', 30);
 
-$user = User::findByUsername('demo');
+$username = (string) config('seed_username', 'demo');
+$user = User::findByUsername($username);
 if ($user === null) {
     printf("Demo user 'demo' not found. Change the username in the script to an existing user.\n");
     return;
