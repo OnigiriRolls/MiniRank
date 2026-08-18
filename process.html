@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniRank — Process Document</title>
+    <style>
+      :root {
+        --color-text: #1f2937;
+        --color-muted: #6b7280;
+        --color-border: #d1d5db;
+        --color-primary: #1d4ed8;
+        --color-primary-hover: #1e40af;
+        --color-bg: #ffffff;
+        --color-danger: #b91c1c;
+        --color-danger-bg: #fef2f2;
+        --color-success-bg: #f0fdf4;
+        --color-header-bg: #f9fafb;
+        --font-sans:
+          system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--color-text);
+        background: var(--color-bg);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin-top: 0;
+      }
+
+      a {
+        color: var(--color-primary);
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .site-header {
+        background: var(--color-header-bg);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .site-header .container {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .site-header h1 {
+        margin: 0;
+        font-size: 1.75rem;
+      }
+
+      .site-header p {
+        margin: 4px 0 0;
+        color: var(--color-muted);
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--color-border);
+        color: var(--color-muted);
+        font-size: 0.9rem;
+      }
+
+      main {
+        padding-top: 24px;
+        padding-bottom: 48px;
+      }
+
+      section {
+        margin-bottom: 40px;
+      }
+
+      section > h2 {
+        font-size: 1.5rem;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      section h3 {
+        font-size: 1.2rem;
+        margin-top: 24px;
+      }
+
+      section h4 {
+        font-size: 1.05rem;
+        margin-bottom: 4px;
+      }
+
+      .fill {
+        margin: 0 0 16px;
+        padding: 12px 16px 12px 32px;
+        border: 1px dashed var(--color-border);
+        border-radius: 4px;
+        min-height: 40px;
+      }
+
+      .fill li {
+        margin-bottom: 8px;
+      }
+
+      .fill li:last-child {
+        margin-bottom: 0;
+      }
+
+      .prompt-block {
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 24px;
+      }
+
+      .prompt-block.failed {
+        border-color: var(--color-danger);
+        background: var(--color-danger-bg);
+      }
+
+      .prompt-block h4 {
+        margin-bottom: 8px;
+      }
+
+      .prompt-block.failed h4 {
+        color: var(--color-danger);
+      }
+
+      .prompt-label {
+        font-weight: 600;
+        margin: 12px 0 4px;
+      }
+
+      .prompt-block .fill {
+        margin-bottom: 8px;
+        background: var(--color-bg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>MiniRank — Process Document</h1>
+        <p>
+          A simulated keyword position tracker built with PHP (no framework),
+          SQLite via PDO, and a simple MVC-ish structure.
+        </p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="plan">
+        <h2>Plan</h2>
+
+        <h3>Plan &amp; key decisions</h3>
+
+        <h4>Overall approach</h4>
+        <div class="fill">
+          I first started with understanding the requirements and deciding on
+          the tech stack. Before implementing anything, I used OpenCode to help
+          design the project structure. I implemented the required tasks first
+          and then moved on to the stretch tasks. I generally followed this
+          workflow:
+          <ul class="fill">
+            <li>Understand requirement</li>
+            <li>Make important design decisions</li>
+            <li>Create/review implementation plan</li>
+            <li>Implement a small increment with OpenCode</li>
+            <li>Review generated code and diff</li>
+            <li>Run/test the application</li>
+            <li>Manually modify/refactor if necessary</li>
+            <li>Fix bugs if necessary</li>
+            <li>Continue with the next increment</li>
+          </ul>
+          Throughout the implementation, I kept my own notes containing: tasks &
+          ideas to implement/check, problems encountered with the AI agent,
+          design decisions and a list of OpenCode sessions.
+        </div>
+
+        <h4>Milestones Order</h4>
+        <div class="fill">
+          M1 (+ UI list), M2, M3, M4, M5, M7, M8, M6, S1, S4, S5, S6, S2, S3
+          <br />
+          I chose the order based on required effort & complexity. M6 was
+          considered throughout implementation, but I performed the dedicated
+          security review after the core functionality was complete.
+        </div>
+
+        <h4>Design choices</h4>
+        <ul class="fill">
+          <li>
+            Client-side vs server-side keyword search
+            <div class="fill">
+              I considered whether the keyword search should happen on the
+              server or in the browser. Because MiniRank is a small application
+              and the keyword list is already loaded on the page, I chose the
+              simpler client-side filtering approach.
+            </div>
+          </li>
+          <li>
+            Database IDs in the frontend
+            <div class="fill">
+              The frontend uses database IDs (e.g. identify keywords). I
+              intentionally accepted this for MiniRank because the application
+              is small and the data is generated locally. However, I would make
+              a different decision in a production application. I would avoid
+              allowing database implementation details to leak unnecessarily
+              through the application layers. I would introduce public
+              identifiers/DTOs or another abstraction depending on the
+              architecture.
+            </div>
+          </li>
+          <li>
+            Refresh / trend
+            <div class="fill">
+              I decided that the refresh action should update both the keyword
+              position and the trend. As a user of the app, I would expect the
+              trend to be refreshed whenever the current position is refreshed.
+            </div>
+          </li>
+          <li>
+            CSV delimiter
+            <div class="fill">
+              I tested the CSV download and found that Excel did not correctly
+              split the values into columns when using ',' as the delimiter. I
+              decided to use ';' instead, since this allowed the exported CSV to
+              open correctly in Excel with the values separated into columns.
+            </div>
+          </li>
+        </ul>
+
+        <h4>Tech choices</h4>
+        <ul class="fill">
+          <li>
+            Plain PHP, SQLite, HTML/CSS/JavaScript, Composer / PHPUnit
+            <div class="fill">
+              I chose this stack because it is lightweight, easy to set up, and
+              appropriate for the size and scope of the project. A framework
+              would have introduced additional configuration that was not
+              necessary for this assessment. Since I had not worked with PHP
+              before, this also gave me an opportunity to work with the language
+              directly.
+            </div>
+          </li>
+          <li>
+            Chart.js for the chart stretch task
+            <div class="fill">
+              In this case, I had to choose between Chart.js and ApexCharts. I
+              wanted to use a simple, lightweight and well-established library
+              for this small project. ApexCharts offers complex charts with many
+              configuration options so I chose the simpler Chart.js.
+            </div>
+          </li>
+          <li>
+            Prettier & PHP Intelephense
+            <div class="fill">
+              I chose popular & trusted formatters to keep the code consistently
+              formatted and easier to read.
+            </div>
+          </li>
+        </ul>
+
+        <h3>What I would change in hindsight</h3>
+        <div class="fill">
+          In hindsight, I would spend a little more time to think about
+          arhitecture decisions. For example, I would decide in the beginning if
+          I wanted to use a UI library like bootstrap. Another thing which I
+          should have considered is how the routes/urls would look like. I use
+          query params instead of clean urls ('project/id/keywords'). Since this
+          application is small, I could have changed these decisions, but I
+          didn't consider it was worth it.
+        </div>
+      </section>
+
+      <section id="prompts-fixes">
+        <h2>Prompts &amp; fixes</h2>
+        <div class="fill">
+          I only used the free model: DeepSeek V4 Flash. I first created a
+          step-by-step plan with the AI and took design decision/implementation
+          decisions. Only then I instructed the AI to implement, one step at a
+          time. This way, I didn't consume a lot of quota.
+        </div>
+        <div class="prompt-block">
+          <h4>Prompt 1</h4>
+          <p class="prompt-label">Prompt</p>
+          <div class="fill">
+            I need to make an application called MiniRank, which is a keyword
+            position tracker. All ranking data is simulated — no real search
+            engines involved. I need to implement all these requirements:
+            <ul class="fill">
+              <li>
+                M1 Keywords CRUD: add/edit/delete the keywords (search phrases)
+                tracked for one configured website. Single-user app — no login.
+              </li>
+              <li>
+                M2 Seeded history: a seed script creates demo keywords with ~30
+                days of daily positions (1–100).
+              </li>
+              <li>
+                M3 Refresh simulation: a "Refresh positions" button generates
+                today's positions server-side and updates the page via AJAX,
+                without a full page reload.
+              </li>
+              <li>
+                M4 Keyword list: every keyword with its current position, a
+                7-day trend indicator (improved / declined / stable), and a text
+                search.
+              </li>
+              <li>
+                M5 Keyword detail: a page per keyword showing the position
+                history as a table.
+              </li>
+              <li>
+                M6 Security basics: parameterized queries (no SQL built by
+                string concatenation), escaped output, and no secrets committed
+                to the repository.
+              </li>
+              <li>
+                M7 Runs in 5 minutes: README with setup steps, a seed command,
+                and a one-command start (php -S ... or docker compose up).
+                Database: SQLite (recommended — easiest for us to run) or MySQL.
+              </li>
+              <li>
+                M8 Responsive: usable at phone width. Functional beats beautiful
+                — we are not grading pixel-perfection.
+              </li>
+            </ul>
+
+            I will use plain php, html/css/js and SQLite. Plan how the project
+            structure should be: what folders do I need, how do I separate php
+            code from frontend and database.
+          </div>
+
+          <p class="prompt-label">What happened</p>
+          <div class="fill">
+            This was the first prompt when I started the app. It is important
+            because it helped me create a good project structure, on layers:
+            Model, View, Controller. This helped me separate concerns and
+            navigate the project more easily. In addition, by mentioning the
+            tasks that I needed to implement, the AI gave me a rough
+            implementation plan. The agent considered security basics (M6) when
+            planning and implementing right from the start.
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <h4>Prompt 2</h4>
+          <p class="prompt-label">Prompt</p>
+          <div class="fill">
+            I started making the MiniRank app, a keyword position tracker. All
+            ranking data is simulated — no real search engines involved. These
+            are the tasks that I already implemented:
+            <ul class="fill">
+              <li>
+                M1 Keywords CRUD: add/edit/delete the keywords (search phrases)
+                tracked for one configured website. Single-user app — no login.
+              </li>
+              <li>
+                M2 Seeded history: a seed script creates demo keywords with ~30
+                days of daily positions (1–100).
+              </li>
+              <li>
+                M4 Keyword list: every keyword with its current position, a
+                7-day trend indicator (improved / declined / stable), and a text
+                search.
+              </li>
+              <li>
+                M5 Keyword detail: a page per keyword showing the position
+                history as a table.
+              </li>
+              <li>
+                M6 Security basics: parameterized queries (no SQL built by
+                string concatenation), escaped output, and no secrets committed
+                to the repository.
+              </li>
+              <li>
+                M8 Responsive: usable at phone width. Functional beats beautiful
+                — we are not grading pixel-perfection.
+              </li>
+            </ul>
+            <ul class="fill">
+              <li>
+                PHP (no framework), SQLite via PDO, simple MVC-ish structure:
+                controllers/, models/, views/.
+              </li>
+              <li>
+                Routing is in public/index.php — a front controller that
+                dispatches on action (GET/POST).
+              </li>
+              <li>
+                No output escaping on the list besides e() in the phrase — good
+                pattern to reuse. Keep security basics M6 in mind all the time.
+              </li>
+            </ul>
+
+            Now I need to implement: Multiple projects/websites, each with its
+            own keywords. First, think about the major changes that I need to
+            make (db, backend, frontend). Also mention what decisions I need to
+            make. Don t give me any code and don t test anything.
+          </div>
+
+          <p class="prompt-label">What happened</p>
+          <div class="fill">
+            This prompt was really usefull when I started task S2. It helped me
+            think about the design decisions I need to consider before
+            implementing. It also gave me an overview of what needed to be
+            implemented so I can better check the code & app.
+          </div>
+        </div>
+
+        <div class="prompt-block failed">
+          <h4>Prompt 3 — the one that failed</h4>
+          <p class="prompt-label">Prompt</p>
+          <div class="fill">
+            I started making the MiniRank app, a keyword position tracker. All
+            ranking data is simulated — no real search engines involved. These
+            are the tasks that I already implemented:
+            <ul class="fill">
+              <li>
+                M1 Keywords CRUD: add/edit/delete the keywords (search phrases)
+                tracked for one configured website. Single-user app — no login.
+              </li>
+              <li>
+                M2 Seeded history: a seed script creates demo keywords with ~30
+                days of daily positions (1–100).
+              </li>
+              <li>
+                M4 Keyword list: every keyword with its current position, a
+                7-day trend indicator (improved / declined / stable), and a text
+                search.
+              </li>
+              <li>
+                M5 Keyword detail: a page per keyword showing the position
+                history as a table.
+              </li>
+              <li>
+                M6 Security basics: parameterized queries (no SQL built by
+                string concatenation), escaped output, and no secrets committed
+                to the repository.
+              </li>
+              <li>
+                M8 Responsive: usable at phone width. Functional beats beautiful
+                — we are not grading pixel-perfection.
+              </li>
+            </ul>
+            <ul class="fill">
+              <li>
+                PHP (no framework), SQLite via PDO, simple MVC-ish structure:
+                controllers/, models/, views/.
+              </li>
+              <li>
+                Routing is in public/index.php — a front controller that
+                dispatches on action (GET/POST).
+              </li>
+              <li>
+                No output escaping on the list besides e() in the phrase — good
+                pattern to reuse. Keep security basics M6 in mind all the time.
+              </li>
+            </ul>
+
+            Now I need to implement: Multiple projects/websites, each with its
+            own keywords. I have the implementation plan already. First,look
+            through the code and then we will start implementing. DOn t plan or
+            implement anything, just look through the codebase at database
+            schema, bootstrap, helper, models and views.
+          </div>
+
+          <p class="prompt-label">What happened</p>
+          <div class="fill">
+            This prompt was not ok, as it only consumed quota. I already had the
+            implementation plan so I could have instructed the AI to build the
+            first implementation step. I tought the agent needed to look through
+            the code first so I instructed it to only look through the code. I
+            could have just referenced the needed scripts directly. The next
+            time I started a new session, I instructed the agent to start
+            building the first step directly.
+          </div>
+        </div>
+        <h4>Mistakes the AI made & how I caught them</h4>
+        <ul class="fill">
+          <li>Add/edit keyword form</li>
+          <div class="fill">
+            The agent created the keyword page with a table, an input and a
+            button for adding a new keyword. The agent created an edit form for
+            editing. In this form, the agent added labels and actions for the
+            add action as well, even though the add action was done using an
+            input & button. I found this while looking through the code of the
+            edit form. I deleted the labels & actions for add.
+          </div>
+          <li>Test assert</li>
+          <div class="fill">
+            When the agent implemented a test case for the trend function:
+            testHistoryTooShortReturnsNull, it added an assert for
+            Position::create. This is not correct since the test should only
+            fail because of the trend function. I found this while checking the
+            code. I deleted the incorrect assert.
+          </div>
+          <li>Login & Register buttons duplication</li>
+          <div class="fill">
+            On the Login page, the agent added buttons for login & register in
+            the navbar (header) and in the body of the page as well. The buttons
+            did the same actions. I found this while testing the application
+            manually. I deleted the buttons from the page body.
+          </div>
+          <li>Testing</li>
+          <div class="fill">
+            The agent tried to test the implementation itself waisting quota,
+            even though I didn't ask it to do this. I found this by looking in
+            the agent chat. I added in my prompts: 'Don't test anything. I will
+            test manually'.
+          </div>
+          <li>Duplicated code</li>
+          <div class="fill">
+            After the seeding script and trend calculation was implemented, I
+            found that both used the same logic to simulate positions. The agent
+            didn't detect the code duplication, so I instructed it to create a
+            general function for simulating the keyword position, so it could be
+            used in both places. I found this while checking the code.
+          </div>
+        </ul>
+      </section>
+
+      <section id="retrospective">
+        <h2>Retrospective</h2>
+        <h3>What went well</h3>
+        <div class="fill">
+          The AI agent significantly accelerated implementation, especially for
+          parts of PHP that I was less familiar with. The workflow I used was
+          very useful and easy: plan -> implement -> check. I learnt that
+          planning actually makes a difference, especially when you are limited
+          by quotas. It really helped me to have a working UI early, so I could
+          better verify the behaviour of the app and identify problems.
+        </div>
+        <h3>What I would do differently</h3>
+        <div class="fill">
+          If I repeated the assessment, I would spend more time during the
+          initial planning stage identifying the dependencies between
+          requirements. I would also be more explicit in prompts about the exact
+          scope of a change and which files/areas should remain untouched. I
+          would also be more clear in my prompts about what I wanted: an
+          explanation, a plan, or code.
+        </div>
+
+        <h3>Hours spent</h3>
+        <p class="fill">&asymp; 17 hours total</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; 2026 MiniRank — Process Document</p>
+      </div>
+    </footer>
+  </body>
+</html>
