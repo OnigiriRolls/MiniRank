@@ -78,6 +78,7 @@
                         <a href="index.php?action=edit&amp;project_id=<?= (int) $projectId ?>&amp;id=<?= (int) $kw['id'] ?>">Edit</a>
                         <form method="post" action="index.php" class="inline" onsubmit="return confirm('Delete this keyword?');">
                             <input type="hidden" name="action" value="destroy">
+                            <input type="hidden" name="project_id" value="<?= (int) $projectId ?>">
                             <input type="hidden" name="id" value="<?= (int) $kw['id'] ?>">
                             <?= csrfField() ?>
                             <button type="submit" class="link-danger">Delete</button>
