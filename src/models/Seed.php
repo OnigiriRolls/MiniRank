@@ -6,7 +6,8 @@ class Seed
 {
     public static function run(int $days, array $projects, int $userId): array
     {
-        db()->exec('DELETE FROM projects');
+        $stmt = db()->prepare('DELETE FROM projects WHERE user_id = :user_id');
+        $stmt->execute([':user_id' => $userId]);
 
         $today = new DateTimeImmutable('today');
         $startDate = $today->modify('-' . ($days - 1) . ' days');

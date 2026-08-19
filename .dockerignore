@@ -1,0 +1,12 @@
+.git
+vendor
+phpunit-cache
+db/*.sqlite
+db/*.sqlite-journal
+db/*.sqlite-wal
+db/*.sqlite-shm
+.env
+.env.*
+config.local.php
+hello.php
+process.html

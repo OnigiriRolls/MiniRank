@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db:/var/www/html/db
+    environment:
+      MINIRANK_DB_PATH: /var/www/html/db/minirank.sqlite
