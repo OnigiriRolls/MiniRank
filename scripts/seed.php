@@ -9,7 +9,7 @@ $days = (int) config('seed_days', 30);
 $username = (string) config('seed_username', 'demo');
 $user = User::findByUsername($username);
 if ($user === null) {
-    printf("Demo user 'demo' not found. Change the username in the script to an existing user.\n");
+    printf("User '%s' was not found. Change the username in config.php to an existing user.\n", e($username));
     return;
 }
 $userId = (int) $user['id'];
